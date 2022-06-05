@@ -1,0 +1,22 @@
+{
+  "name": "threejs",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/three": "^0.141.0",
+    "pug": "^3.0.2",
+    "sass": "^1.52.2",
+    "three": "0.134",
+    "troisjs": "^0.3.4",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "vite": "^2.9.9"
+  }
+}
