@@ -17,7 +17,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   width: 100%;
-  background: url('/stars.jpg');
+  //background: url('/stars.jpg');
   background-size: cover;
 }
 
@@ -30,13 +30,15 @@ body {
 
 <template lang="pug">
 
-TroisImp
+//TroisImp
+LightExample
 
 </template>
 
 
 <script setup>
 import TroisImp from './components/TroisImp.vue'
+import LightExample from './components/LightExample.vue'
 </script>
 
 

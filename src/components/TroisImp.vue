@@ -8,6 +8,7 @@ let renderer = ref()
 let box = ref()
 let sphere = ref()
 let camera = ref()
+let abojaber = ref()
 
 
 const pull = ( from, to, power ) => {
@@ -24,7 +25,9 @@ onMounted(() => {
 	box = box.value.mesh
 	sphere = sphere.value.mesh
 	camera = camera.value.camera
+	abojaber = abojaber.value.model
 
+	console.log(abojaber)
 
 	renderer = renderer.value
 	renderer.onBeforeRender(() => {
@@ -41,24 +44,25 @@ onMounted(() => {
 
 
 <template lang="pug">
-Renderer( ref="renderer" resize="window" orbitCtrl antialias alpha shadow )
+Renderer( ref="renderer" resize="window" :orbitCtrl="{ enableDamping: true, dampingFactor: 0.05 }" antialias alpha shadow pointer )
 	Camera( ref="camera" :position="{ x:3,z:-35 }" )
 
 	Scene( ref="scene" )
-		PointLight( ref="light" :position="{ x:0,y:30,z:-8 }" color="#fff" castShadow intensity="1" :shadow-map-size="{ width: 512, height: 512 }" )
+		PointLight( ref="light" :position="{ x:0,y:30,z:-8 }" color="#fff" castShadow intensity="1.5" :shadow-map-size="{ width: 512, height: 512 }" )
 
 
-		Box( ref="box" :position="{ y:-10 }" :size="2" castShadow )
-			LambertMaterial( color="#222" )
-				//Texture( color="#222" )
+		Sphere( ref="box" :position="{ x:4,y:1  }" :size="2" castShadow )
+			LambertMaterial
+				Texture( src="/wood.jpg" )
 					
 
 		Sphere( ref="sphere" :position="{ x:0, y:0, z:-200 }" :radius="80" recieveShadow="true" )
 			PhongMaterial
 				Texture( src="/mars" )
+					h1 BRUH
 
 
-		//Plane( ref="plane" :position="{ y:-10 }" recieve-shadow :scale="{ x:10, y:10 }" :rotation="{ x:-1.5 }" )
+		Plane( ref="plane" :position="{ x:-10, y:1 }" recieve-shadow :scale="{ x:10, y:3 }" :rotation="{ x:0 }" )
 			PhongMaterial( color="#000" )
 
 		GltfModel( ref="abojaber" src="/abojaber.glb" :scale="{ x:10,y:10,z:10 }" :position="{ y:-4.5 }" :rotation="{ y: 1.3 }" )
@@ -68,4 +72,6 @@ Renderer( ref="renderer" resize="window" orbitCtrl antialias alpha shadow )
 
 
 <style lang="sass">
+h1
+	color: #fff
 </style>
