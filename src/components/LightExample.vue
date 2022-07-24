@@ -1,26 +1,76 @@
-<template>
-  <Renderer ref="renderer" resize antialias :orbit-ctrl="{ autoRotate: true, enableDamping: true, dampingFactor: 0.05 }" pointer>
+<!-- <template>
+  <Renderer ref="renderer" shadow resize antialias :orbit-ctrl="{ autoRotate: true, enableDamping: true, dampingFactor: 0.05 }" pointer>
     <Camera :position="{ x: 0, y: 0, z: 10 }" />
     <Scene background="#000000" >
-      <PointLight ref="light" :intensity="0.5" :position="{ x: 0, y: 0, z: 0 }">
-        <Sphere :radius="0.1" />
+      <PointLight cast-shadow :shadow-map-size="{ width: 512, height: 512 }" ref="light" :intensity="0.7" :position="{ x: 0, y: 0, z: 0 }">
+        <Sphere :radius="0.3" recieve-shadow />
       </PointLight>
       <Group :rotation="{ x: -Math.PI / 2, y: 0, z: 0 }">
-        <RectAreaLight color="#ff6000" :position="{ x: 0, y: 10, z: 1 }" v-bind="rectLightsProps" />
-        <RectAreaLight color="#0060ff" :position="{ x: 10, y: 0, z: 1 }" v-bind="rectLightsProps" />
-        <RectAreaLight color="#60ff60" :position="{ x: -10, y: 0, z: 1 }" v-bind="rectLightsProps" />
-        <RectAreaLight color="#ffffff" :position="{ x: 0, y: -10, z: 1 }" v-bind="rectLightsProps" />
-        <Plane :width="30" :height="30" :rotation="{ x: 0 }" :position="{ z: -3 }">
-          <StandardMaterial :props="{ displacementScale: 0.2, roughness: 0, metalness: 0 }"  >
-            <Texture :props="texturesProps" src="/textures/Wood_Tiles_002_basecolor.jpg" />
-            <Texture :props="texturesProps" src="/textures/Wood_Tiles_002_height.png" name="displacementMap" />
-            <Texture :props="texturesProps" src="/textures/Wood_Tiles_002_normal.jpg" name="normalMap" />
-            <Texture :props="texturesProps" src="/textures/Wood_Tiles_002_roughness.jpg" name="roughnessMap" />
-            <Texture :props="texturesProps" src="/textures/Wood_Tiles_002_ambientOcclusion.jpg" name="aoMap" />
+        <RectAreaLight cast-shadow
+          color="#ff6000"
+          :position="{ x: 0, y: 10, z: 1 }"
+          v-bind="rectLightsProps"
+        />
+        <RectAreaLight cast-shadow
+          color="#0060ff"
+          :position="{ x: 10, y: 0, z: 1 }"
+          v-bind="rectLightsProps"
+        />
+        <RectAreaLight cast-shadow
+          color="#60ff60"
+          :position="{ x: -10, y: 0, z: 1 }"
+          v-bind="rectLightsProps"
+        />
+        <RectAreaLight cast-shadow
+          color="#ffffff"
+          :position="{ x: 0, y: -10, z: 1 }"
+          v-bind="rectLightsProps"
+        />
+    		<GltfModel cast-shadow
+          ref="donut"
+          src="/Donut.glb"
+          :scale="{ x:10,y:10,z:10 }"
+          :rotation="{ x: 1.6 }"
+          :position="{ z:-2.5 }"
+          @load="deboog"
+        />
+
+        <Plane
+          recieve-shadow
+          :width="30"
+          :height="30"
+          :rotation="{ x: 0 }"
+          :position="{ z: -3 }"
+        >
+          <StandardMaterial
+            :props="{ displacementScale: 0.2, roughness: 0, metalness: 0 }"
+          >
+            <Texture
+              :props="texturesProps"
+              src="/textures/Wood_Tiles_002_basecolor.jpg"
+            />
+            <Texture
+              :props="texturesProps"
+              src="/textures/Wood_Tiles_002_height.png" name="displacementMap"
+            />
+            <Texture
+              :props="texturesProps"
+              src="/textures/Wood_Tiles_002_normal.jpg"
+              name="normalMap"
+            />
+            <Texture
+              :props="texturesProps"
+              src="/textures/Wood_Tiles_002_roughness.jpg"
+              name="roughnessMap"
+            />
+            <Texture
+              :props="texturesProps"
+              src="/textures/Wood_Tiles_002_ambientOcclusion.jpg"
+              name="aoMap"
+            />
           </StandardMaterial>
         </Plane>
       </Group>
-		<GltfModel ref="abojaber" src="/abojaber.glb" :scale="{ x:10,y:10,z:10 }" :rotation="{ y: 1.3 }" />
     </Scene>
     <EffectComposer>
       <RenderPass />
@@ -28,6 +78,110 @@
       <FXAAPass />
     </EffectComposer>
   </Renderer>
+</template> -->
+
+<template lang="pug">
+Renderer(
+  ref='renderer'
+  shadow resize antialias pointer
+  :orbit-ctrl='{ autoRotate: true, enableDamping: true, dampingFactor: 0.05 }' 
+)
+
+  Camera( :position='{ x: 0, y: 0, z: 10 }' )
+
+  Scene(background='#000000')
+    PointLight(
+      ref='light'
+      cast-shadow
+      :intensity='0.7'
+      :shadow-map-size='{ width: 512, height: 512 }'
+      :position='{ x: 0, y: 0, z: 0 }'
+    )
+      Sphere(
+        :radius='0.3'
+        recieve-shadow
+      )
+
+    Group( :rotation='{ x: -Math.PI / 2, y: 0, z: 0 }' )
+
+      RectAreaLight(
+        cast-shadow=''
+        color='#ff6000'
+        :position='{ x: 0, y: 10, z: 1 }'
+        v-bind='rectLightsProps'
+      )
+
+      RectAreaLight(
+        cast-shadow
+        color='#0060ff'
+        :position='{ x: 10, y: 0, z: 1 }'
+        v-bind='rectLightsProps'
+      )
+
+      RectAreaLight(
+        cast-shadow
+        color='#60ff60'
+        :position='{ x: -10, y: 0, z: 1 }'
+        v-bind='rectLightsProps'
+      )
+
+      RectAreaLight(
+        cast-shadow
+        color='#ffffff'
+        :position='{ x: 0, y: -10, z: 1 }'
+        v-bind='rectLightsProps'
+      )
+
+      GltfModel(
+        cast-shadow
+        ref='donut'
+        src='/Donut.glb'
+        :scale='{ x:10,y:10,z:10 }'
+        :rotation='{ x: 1.6 }'
+        :position='{ z:-2.5 }'
+        @load='deboog'
+      )
+
+      Plane(
+        recieve-shadow
+        :width='30'
+        :height='30'
+        :rotation='{ x: 0 }'
+        :position='{ z: -3 }'
+      )
+        StandardMaterial(
+          :props='{ displacementScale: 0.2, roughness: 0, metalness: 0 }'
+        )
+          Texture(
+            :props='texturesProps'
+            src='/textures/Wood_Tiles_002_basecolor.jpg'
+          )
+          Texture(
+            :props='texturesProps'
+            src='/textures/Wood_Tiles_002_height.png'
+            name='displacementMap'
+          )
+          Texture(
+            :props='texturesProps'
+            src='/textures/Wood_Tiles_002_normal.jpg'
+            name='normalMap'
+          )
+          Texture(
+            :props='texturesProps'
+            src='/textures/Wood_Tiles_002_roughness.jpg'
+            name='roughnessMap'
+          )
+          Texture(
+            :props='texturesProps'
+            src='/textures/Wood_Tiles_002_ambientOcclusion.jpg'
+            name='aoMap'
+          )
+          
+  EffectComposer
+    RenderPass
+      UnrealBloomPass(:strength='0.3')
+        FXAAPass
+
 </template>
 
 <script>
@@ -57,6 +211,7 @@ export default {
     AmbientLight,
     Camera,
     EffectComposer,
+    GltfModel,
     FXAAPass,
     Group,
     Renderer,
@@ -95,5 +250,10 @@ export default {
       light.position.copy(pointerV3);
     });
   },
+  methods: {
+    deboog() {
+      console.log('Im here!')
+    }
+  }
 };
 </script>
