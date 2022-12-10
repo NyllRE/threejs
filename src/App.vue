@@ -30,14 +30,13 @@ body {
 
 <template lang="pug">
 
-//TroisImp
+//- TroisImp
 LightExample
 
 </template>
 
 
 <script setup>
-import TroisImp from './components/TroisImp.vue'
 import LightExample from './components/LightExample.vue'
 </script>
 
