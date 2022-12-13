@@ -89,13 +89,13 @@ Renderer(
 	:orbit-ctrl='{ autoRotate: true, enableDamping: true, dampingFactor: 0.05 }' 
 )
 
-	Camera( :position='{ x: 0, y: 0, z: 10 }' )
+	Camera( :position='{ x: 0, y: 0, z: 13 }' )
 
 	Scene(background='#000000')
 		PointLight(
 			ref='light'
 			cast-shadow
-			:intensity='0.7'
+			:intensity='1'
 			:shadow-map-size='{ width: 512, height: 512 }'
 			:position='{ x: 0, y: 0, z: 0 }'
 		)
@@ -136,11 +136,12 @@ Renderer(
 
 			GltfModel(
 				cast-shadow
+				recieve-shadow
 				ref='donut'
 				src='/Donut.glb'
 				:scale='{ x: 10, y: 10, z: 10 }'
-				:rotation='{ x: 1.6 }'
-				:position='{ z: -2.5 }'
+				:rotation='{ x: 1.6, y: donut.z }'
+				:position='{ z: donut.z }'
 				@load='deboog'
 			)
 
@@ -152,6 +153,7 @@ Renderer(
 				:position='{ z: -3 }'
 			)
 				StandardMaterial(
+					recieve-shadow
 					:props='{ displacementScale: 0.2, roughness: 0, metalness: 0 }'
 				)
 					Texture(
@@ -242,6 +244,9 @@ export default {
 				height: 5,
 				helper: true,
 			},
+			donut: {
+				z: -2.5,
+			},
 		};
 	},
 	mounted() {
@@ -251,8 +256,17 @@ export default {
 		renderer.onBeforeRender(() => {
 			light.position.copy(pointerV3);
 		});
+		this.animate();
 	},
 	methods: {
+		animate() {
+
+			if (this.donut.z <= 100) {
+				this.donut.z += .001;
+				console.log(this.donut.z)
+			} 
+			setInterval(() => this.animate(), 100)
+		},
 		deboog() {
 			console.log('Im here!');
 		},

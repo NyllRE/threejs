@@ -3,6 +3,8 @@ lockfileVersion: 5.4
 specifiers:
   '@types/three': ^0.141.0
   '@vitejs/plugin-vue': ^2.3.3
+  cannon-es: ^0.20.0
+  cannon-es-debugger: ^1.0.0
   pug: ^3.0.2
   sass: ^1.52.2
   three: '0.134'
@@ -12,6 +14,8 @@ specifiers:
 
 dependencies:
   '@types/three': 0.141.0
+  cannon-es: 0.20.0
+  cannon-es-debugger: 1.0.0_eztzmzgncunvrorrvxk24tm7t4
   pug: 3.0.2
   sass: 1.52.2
   three: 0.134.0
@@ -179,6 +183,24 @@ packages:
     dependencies:
       function-bind: 1.1.1
       get-intrinsic: 1.1.1
+    dev: false
+
+  /cannon-es-debugger/1.0.0_eztzmzgncunvrorrvxk24tm7t4:
+    resolution: {integrity: sha512-sE9lDOBAYFKlh+0w+cvWKwUhJef8HYnUSVPWPL0jD15MAuVRQKno4QYZSGxgOoJkMR3mQqxL4bxys2b3RSWH8g==}
+    peerDependencies:
+      cannon-es: 0.x
+      three: 0.x
+      typescript: '>=3.8'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      cannon-es: 0.20.0
+      three: 0.134.0
+    dev: false
+
+  /cannon-es/0.20.0:
+    resolution: {integrity: sha512-eZhWTZIkFOnMAJOgfXJa9+b3kVlvG+FX4mdkpePev/w/rP5V8NRquGyEozcjPfEoXUlb+p7d9SUcmDSn14prOA==}
     dev: false
 
   /character-parser/2.2.0:
