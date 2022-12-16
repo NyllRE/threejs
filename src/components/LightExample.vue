@@ -6,14 +6,14 @@
 	top: 0;
 	left: 0;
 	z-index: 99;
-	color: white
+	color: white;
 }
 </style>
 
 <template lang="pug">
 Renderer(
 	ref='renderer'
-	shadow resize antialias pointer
+	shadow="" resize="" antialias="" pointer=""
 	:orbit-ctrl='{ autoRotate: true, enableDamping: true, dampingFactor: 0.05 }' 
 )
 
@@ -22,67 +22,63 @@ Renderer(
 	Scene(background='#000000')
 		PointLight(
 			ref='light'
-			cast-shadow
-			:intensity='1'
+			:intensity='.3'
 			color="#f8f"
 			:shadow-map-size='{ width: 512, height: 512 }'
 			:position='{ x: 0, y: 0, z: 0 }'
 		)
 			Sphere(
 				:radius='0.3'
-				recieve-shadow
 			)
 
 		Group( :rotation='{ x: -Math.PI / 2, y: 0, z: 0 }' )
 
+			//=>> Square Lights
 			RectAreaLight(
-				cast-shadow=''
 				color='#ff6000'
 				:position='{ x: 0, y: 10, z: 1 }'
 				v-bind='rectLightsProps'
+				:intensity="10"
 			)
 
 			RectAreaLight(
-				cast-shadow
-				color='#0060ff'
+				color='#ff00ff'
 				:position='{ x: 10, y: 0, z: 1 }'
 				v-bind='rectLightsProps'
+				:intensity="10"
 			)
 
 			RectAreaLight(
-				cast-shadow
-				color='#60ff60'
+				color='#ffcccc'
 				:position='{ x: -10, y: 0, z: 1 }'
 				v-bind='rectLightsProps'
+				:intensity="10"
 			)
 
 			RectAreaLight(
-				cast-shadow
-				color='#ffffff'
+				color='#0060ff'
 				:position='{ x: 0, y: -10, z: 1 }'
 				v-bind='rectLightsProps'
+				:intensity="10"
 			)
 
+			//=>> Zonut
 			GltfModel(
-				cast-shadow
-				recieve-shadow
 				ref='donut'
 				src='/Donut.glb'
 				:scale='{ x: 10, y: 10, z: 10 }'
 				:rotation='{ x: 1.6, y: donut.rotateZ }'
-				:position='{ z: donut.z }'
+				:position='{ z: -2.5 + donut.z }'
 				@load='deboog'
 			)
 
 			Plane(
-				recieve-shadow
 				:width='30'
 				:height='30'
 				:rotation='{ x: 0 }'
 				:position='{ z: -3 }'
 			)
 				StandardMaterial(
-					recieve-shadow
 					:props='{ displacementScale: 0.2, roughness: 0, metalness: 0 }'
 				)
 					Texture(
@@ -115,9 +111,12 @@ Renderer(
 			UnrealBloomPass(:strength='0.3')
 				FXAAPass
 
-	.debugger
-		h2 {{ donut.z }}
-		h2 {{ donut.dirUp }}
+
+//- Teleport( to="#app" )
+//- 	.debugger
+//- 		h2 {{ donut.z }}
+//- 		h2 {{ donut.dirUp }}
+//- 		h2 {{ donut.rotateZ }}
 </template>
 
 <script lang="ts">
@@ -177,9 +176,10 @@ export default {
 				helper: true,
 			},
 			donut: {
-				z: -2.5,
+				z: 0,
 				rotateZ: 0,
 				dirUp: true,
+				anim: 0,
 			},
 		};
 	},
@@ -190,42 +190,64 @@ export default {
 		renderer.onBeforeRender(() => {
 			light.position.copy(pointerV3);
 		});
-		this.animate()
+		// this.animate()
+		let paused = false
+		let inter = setInterval(() => this.animate(0, 1, 60), 16)
+
+		// @ts-ignore
+		document.addEventListener("keypress", () => {
+			if (paused) {
+				inter = setInterval(() => this.animate(0, 1, 60), 16)
+			} else {
+				clearInterval(inter)
+			}
+			paused = !paused
+			console.log(this.donut.z, this.donut.dirUp, this.donut.anim)
+		})
 	},
 	methods: {
-		animate() {
-			this.donut.rotateZ += this.donut.rotateZ <= 360 ? .001 : -360;
-
+		animate(start, end, steps) {
+			this.donut.rotateZ += .01;
+			const step = this.easeInOutQuad(this.donut.anim, start, end, steps);
+			
 			if (this.donut.dirUp) {
-				this.donut.z += .001;
-				this.donut.dirUp = this.donut.z <= -2 ? true : false;
+				this.donut.anim++;
+				this.donut.dirUp = this.donut.z < end;
+				this.donut.z = step
 			} else {
-				this.donut.z -= .001;
-				this.donut.dirUp = this.donut.z >= -2.5 ? false : true;
+				this.donut.anim++;
+				this.donut.z = Math.abs(end-step);
+				this.donut.dirUp = !this.donut.z > start;
 			}
-
-			console.log(this.donut.z);
-
-			setInterval(() => this.animate(), 1000/60)
+			this.donut.anim = this.donut.anim > steps ? 0 : this.donut.anim;
 		},
 		deboog() {
 			console.log('Im here!');
 		},
-		bezierCurve(t, p0, p1, p2, p3): { x: number; y: number } {
-			let
-				cX = 3 * (p1.x - p0.x),
-				bX = 3 * (p2.x - p1.x) - cX,
-				aX = p3.x - p0.x - cX - bX,
+		/** AnimeJS is made for this but I'll try to make it myself first */
+		easeInOutQuad(current, start, change, duration) {
+			current = current < 0 ? 1 : current 
+			current /= duration / 2;
+			if (current < 1) return change / 2 * current * current + start;
+			current--;
+			return -change / 2 * (current * (current - 2) - 1) + start;
 
-				cY = 3 * (p1.y - p0.y),
-				bY = 3 * (p2.y - p1.y) - cY,
-				aY = p3.y - p0.y - cY - bY,
-				
-				x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x,
-				y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
-
-			return {x: x, y: y};
 		},
+		// bezierCurve(t, p0, p1, p2, p3): { x: number; y: number } {
+		// 	let
+		// 		cX = 3 * (p1.x - p0.x),
+		// 		bX = 3 * (p2.x - p1.x) - cX,
+		// 		aX = p3.x - p0.x - cX - bX,
+
+		// 		cY = 3 * (p1.y - p0.y),
+		// 		bY = 3 * (p2.y - p1.y) - cY,
+		// 		aY = p3.y - p0.y - cY - bY,
+				
+		// 		x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x,
+		// 		y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
+
+		// 	return {x: x, y: y};
+		// },
 
 	},
 };
