@@ -36,30 +36,34 @@ Renderer(
 			//=>> Square Lights
 			RectAreaLight(
 				color='#ff6000'
-				:position='{ x: 0, y: 10, z: 1 }'
+				:position='{ x: 0, y: 10, z: 3 }'
+				:rotation='{ x: Math.PI * 1.75 }'
 				v-bind='rectLightsProps'
-				:intensity="10"
+				:intensity="15"
 			)
 
 			RectAreaLight(
 				color='#ff00ff'
-				:position='{ x: 10, y: 0, z: 1 }'
+				:position='{ x: 10, y: 0, z: 3 }'
+				:rotation='{ y: Math.PI * 2.25 }'
 				v-bind='rectLightsProps'
-				:intensity="10"
+				:intensity="15"
 			)
 
 			RectAreaLight(
 				color='#ffcccc'
-				:position='{ x: -10, y: 0, z: 1 }'
+				:position='{ x: -10, y: 0, z: 3 }'
+				:rotation='{ y: Math.PI * 1.75 }'
 				v-bind='rectLightsProps'
-				:intensity="10"
+				:intensity="15"
 			)
 
 			RectAreaLight(
 				color='#0060ff'
-				:position='{ x: 0, y: -10, z: 1 }'
+				:position='{ x: 0, y: -10, z: 3 }'
+				:rotation='{ x: Math.PI * 2.25 }'
 				v-bind='rectLightsProps'
-				:intensity="10"
+				:intensity="15"
 			)
 
 			//=>> Zonut
@@ -195,27 +199,30 @@ export default {
 		let inter = setInterval(() => this.animate(0, 1, 60), 16)
 
 		// @ts-ignore
-		document.addEventListener("keypress", () => {
+		document.addEventListener("keypress", (e: KeyboardEvent) => {
+			console.log(this.donut.z, this.donut.dirUp, this.donut.anim)
+			if (e.key == "v") {
+				this.animate(0, 1, 60)
+				return;
+			}
 			if (paused) {
 				inter = setInterval(() => this.animate(0, 1, 60), 16)
 			} else {
 				clearInterval(inter)
 			}
 			paused = !paused
-			console.log(this.donut.z, this.donut.dirUp, this.donut.anim)
 		})
 	},
 	methods: {
 		animate(start, end, steps) {
 			this.donut.rotateZ += .01;
+			this.donut.anim++;
 			const step = this.easeInOutQuad(this.donut.anim, start, end, steps);
 			
 			if (this.donut.dirUp) {
-				this.donut.anim++;
 				this.donut.dirUp = this.donut.z < end;
 				this.donut.z = step
 			} else {
-				this.donut.anim++;
 				this.donut.z = Math.abs(end-step);
 				this.donut.dirUp = !this.donut.z > start;
 			}
@@ -226,7 +233,9 @@ export default {
 		},
 		/** AnimeJS is made for this but I'll try to make it myself first */
 		easeInOutQuad(current, start, change, duration) {
-			current = current < 0 ? 1 : current 
+			current = current <= 0 ? 1 : current 
+			// current = current > duration ? duration : current
+
 			current /= duration / 2;
 			if (current < 1) return change / 2 * current * current + start;
 			current--;
