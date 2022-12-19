@@ -29,13 +29,13 @@ onMounted( () => {
 
 	// degree, aspect-ratio, clip out of screen, max distance render 
 	const camera = new T3.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000)
-/*
+
 	const light = new T3.PointLight( 0xffffff, 2 )
 	light.position.set(0, 0, 2)
 	light.intensity = 1.7
 
 	scene.add(light)
-*/
+
 	// Plane
 	const geometry = new T3.PlaneGeometry( 5,5,10,10 );
 	const material = new T3.MeshStandardMaterial()
@@ -43,8 +43,8 @@ onMounted( () => {
 	material.roughness = 0
 
 
-	//gui.add(material, 'metalness').min(0).max(1)
-	//gui.add(material, 'roughness').min(0).max(1)
+	gui.add(material, 'metalness').min(0).max(1)
+	gui.add(material, 'roughness').min(0).max(1)
 
 
 	material.color = new T3.Color(0xffffff)
